@@ -28,7 +28,7 @@ class Bot(object):
 			sys.exit(1)
 
 		if self._check_login_status(self.receive_socket_data()):
-			print('[%s] Login "%s" successful.' % (time.strftime('%H:%M:%S', time.gmtime()), Config.nick))
+			print('[%s] Login "%s" successful.' % (time.strftime('%H:%M:%S', time.localtime()), Config.nick))
 			return True
 		else:
 			print('[%s] Login "%s" unsuccessful. (hint: make sure your oauth token is set in Config.py).' % (time.strftime('%H:%M:%S', time.gmtime()), Config.nick))
@@ -58,7 +58,7 @@ class Bot(object):
 
 	def _check_join_status(self, line):
 		if("End of /NAMES list" in line):
-			print('[%s] Join channel "#%s" successful.' % (time.strftime('%H:%M:%S', time.gmtime()), Config.channel))
+			print('[%s] Join channel "#%s" successful.' % (time.strftime('%H:%M:%S', time.localtime()), Config.channel))
 			return True
 		else:
 			return False
@@ -69,7 +69,7 @@ class Bot(object):
 			if sock == self.socket:
 				socket_data = self.socket.recv(Config.socket_buffer_size).decode("utf-8", "ignore")
 				if len(socket_data) == 0:
-					print('[%s][%s][Error] Connection was lost.' % (time.strftime('%H:%M:%S', time.gmtime()), Config.channel))
+					print('[%s][%s][Error] Connection was lost.' % (time.strftime('%H:%M:%S', time.localtime()), Config.channel))
 					sys.exit(1)
 				return socket_data
 		return None
@@ -81,5 +81,5 @@ class Bot(object):
 		if not self._join():
 			sys.exit(1)
 		self.socket.send(("PRIVMSG #%s :%s\r\n" % (Config.channel, Config.welcome_message)).encode("utf-8"))
-		print('[%s][#%s][Login] %s' % (time.strftime('%H:%M:%S', time.gmtime()), Config.channel, Config.welcome_message))
+		print('[%s][#%s][Login] %s' % (time.strftime('%H:%M:%S', time.localtime()), Config.channel, Config.welcome_message))
 		return self.socket

@@ -18,8 +18,8 @@ class Bot(threading.Thread):
 				if sock == self.socket:
 					msg = random.choice ( Messages.message )
 					self.socket.send(("PRIVMSG #%s :%s\r\n" % (Config.channel, msg)).encode("utf-8"))
-					print('[%s][Broadcast] %s' % (time.strftime('%H:%M:%S', time.gmtime()), msg))
-		print('[%s][System] %s stop at %s !!' % (time.strftime('%H:%M:%S', time.gmtime()), self.getName(), time.ctime()))
+					print('[%s][Broadcast] %s' % (time.strftime('%H:%M:%S', time.localtime()), msg))
+		print('[%s][System] %s stop at %s !!' % (time.strftime('%H:%M:%S', time.localtime()), self.getName(), time.ctime()))
 
 	def stop(self):
 		self.isrunning = False
