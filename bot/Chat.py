@@ -11,10 +11,18 @@ class Bot(threading.Thread):
 		self.socket = socket
 
 	def receive_chat_data(self):
-		readable, writable, exceptional = select.select([self.socket], [], [], 1)
+		try:
+			readable, writable, exceptional = select.select([self.socket], [], [], 1)
+		except select.error:
+			self.isrunning = False
+			return None
 		for sock in readable:
 			if sock == self.socket:
-				socket_data = self.socket.recv(Config.socket_buffer_size).decode("utf-8", "ignore")
+				try:
+					socket_data = self.socket.recv(Config.socket_buffer_size).decode("utf-8", "ignore")
+				except socket.error:
+					self.isrunning = False
+					return None
 				if len(socket_data) == 0:
 					print('[%s][#%s][Error] Connection was lost.' % (time.strftime('%H:%M:%S', time.localtime()), Config.channel))
 					self.isrunning = False
