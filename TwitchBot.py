@@ -3,19 +3,20 @@ import socket, sys, time, errno, re
 import bot.Broadcast as Broadcast
 import bot.Chat as Chat
 import bot.Login as Login
-import Config
+from lib.Config import Config
 
 if __name__ == '__main__':
 	loop = True
+	config = Config()
 	while loop:
-		LoginBot = Login.Bot()
+		LoginBot = Login.Bot(config)
 		twitch_socket = LoginBot.get_socket()
-	
-		BroadcastBot = Broadcast.Bot('BroadcastBot', Config.broadcast_time, twitch_socket)
-		ChatBot = Chat.Bot('ChatBot', Config.broadcast_time, twitch_socket)
+
+		BroadcastBot = Broadcast.Bot('BroadcastBot', twitch_socket, config)
+		ChatBot = Chat.Bot('ChatBot', twitch_socket, config)
 		BroadcastBot.start()
 		ChatBot.start()
-	
+
 		try:
 			while BroadcastBot.isAlive() and ChatBot.isAlive():
 				pass

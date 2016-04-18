@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 import socket, sys, time, errno, re, select
-import Config
-
 
 class Bot(object):
 
-	def __init__(self):
+	def __init__(self, config):
+		self.config = config
 		try:
 			self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		except socket.error as e:
@@ -14,24 +13,24 @@ class Bot(object):
 
 	def _connect(self):
 		try:
-			self.socket.connect((Config.server, Config.port))
+			self.socket.connect((self.config.address, self.config.port))
 		except socket.error as e:
 			print(e)
 			sys.exit(1)
 
 	def _login(self):
 		try:
-			self.socket.send(("PASS %s\n\r" % Config.oauth_password).encode("utf-8"))
-			self.socket.send(("NICK %s\n\r" % Config.nick).encode("utf-8"))
+			self.socket.send(("PASS %s\n\r" % self.config.oauth_password).encode("utf-8"))
+			self.socket.send(("NICK %s\n\r" % self.config.nick).encode("utf-8"))
 		except socket.error as e:
 			print(e)
 			sys.exit(1)
 
 		if self._check_login_status(self.receive_socket_data()):
-			print('[%s] Login "%s" successful.' % (time.strftime('%H:%M:%S', time.localtime()), Config.nick))
+			print('[%s] Login "%s" successful.' % (time.strftime('%H:%M:%S', time.localtime()), self.config.nick))
 			return True
 		else:
-			print('[%s] Login "%s" unsuccessful. (hint: make sure your oauth token is set in Config.py).' % (time.strftime('%H:%M:%S', time.gmtime()), Config.nick))
+			print('[%s] Login "%s" unsuccessful. (hint: make sure your oauth token is set in Config.py).' % (time.strftime('%H:%M:%S', time.gmtime()), self.config.nick))
 			sys.exit(1)
 
 	def _check_login_status(self, data):
@@ -44,7 +43,7 @@ class Bot(object):
 		
 	def _join(self):
 		try:
-			self.socket.send(("JOIN #%s\n\r" % Config.channel).encode("utf-8"))
+			self.socket.send(("JOIN #%s\n\r" % self.config.channel).encode("utf-8"))
 		except socket.error as e:
 			print(e)
 			sys.exit(1)
@@ -58,7 +57,7 @@ class Bot(object):
 
 	def _check_join_status(self, line):
 		if("End of /NAMES list" in line):
-			print('[%s] Join channel "#%s" successful.' % (time.strftime('%H:%M:%S', time.localtime()), Config.channel))
+			print('[%s] Join channel "#%s" successful.' % (time.strftime('%H:%M:%S', time.localtime()), self.config.channel))
 			return True
 		else:
 			return False
@@ -67,9 +66,9 @@ class Bot(object):
 		readable, writable, exceptional = select.select([self.socket], [], [], 1)
 		for sock in readable:
 			if sock == self.socket:
-				socket_data = self.socket.recv(Config.socket_buffer_size).decode("utf-8", "ignore")
+				socket_data = self.socket.recv(self.config.socket_buffer_size).decode("utf-8", "ignore")
 				if len(socket_data) == 0:
-					print('[%s][%s][Error] Connection was lost.' % (time.strftime('%H:%M:%S', time.localtime()), Config.channel))
+					print('[%s][%s][Error] Connection was lost.' % (time.strftime('%H:%M:%S', time.localtime()), self.config.channel))
 					sys.exit(1)
 				return socket_data
 		return None
@@ -80,6 +79,6 @@ class Bot(object):
 			sys.exit(1)
 		if not self._join():
 			sys.exit(1)
-		self.socket.send(("PRIVMSG #%s :%s\r\n" % (Config.channel, Config.welcome_message)).encode("utf-8"))
-		print('[%s][#%s][Login] %s' % (time.strftime('%H:%M:%S', time.localtime()), Config.channel, Config.welcome_message))
+		self.socket.send(("PRIVMSG #%s :%s\r\n" % (self.config.channel, self.config.welcome_message)).encode("utf-8"))
+		print('[%s][#%s][Login] %s' % (time.strftime('%H:%M:%S', time.localtime()), self.config.channel, self.config.welcome_message))
 		return self.socket
