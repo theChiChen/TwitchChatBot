@@ -29,8 +29,8 @@ class Bot(threading.Thread):
 						except socket.error:
 							self.isrunning = False
 							break
-						print('[%s][Broadcast] %s' % (time.strftime('%H:%M:%S', time.localtime()), msg))
-		print('[%s][System] %s stop at %s !!' % (time.strftime('%H:%M:%S', time.localtime()), self.getName(), time.ctime()))
+						print('[{}][Broadcast] {}'.format(time.strftime('%H:%M:%S', time.localtime()), msg))
+		print('[{}][System] {} stop at {} !!'.format(time.strftime('%H:%M:%S', time.localtime()), self.getName(), time.ctime()))
 
 	def stop(self):
 		self.isrunning = False

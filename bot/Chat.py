@@ -23,7 +23,7 @@ class Bot(threading.Thread):
 					self.isrunning = False
 					return None
 				if len(socket_data) == 0:
-					print('[%s][#%s][Error] Connection was lost.' % (time.strftime('%H:%M:%S', time.localtime()), self.config.channel))
+					print('[{}][#{}][Error] Connection was lost.'.format(time.strftime('%H:%M:%S', time.localtime()), self.config.channel))
 					self.isrunning = False
 					return None
 				if socket_data == "PING :tmi.twitch.tv\r\n":
@@ -43,7 +43,7 @@ class Bot(threading.Thread):
 
 	def sendMessage(self, msg):
 		self.socket.send(("PRIVMSG #%s :%s\r\n" % (self.config.channel, msg)).encode("utf-8"))
-		print("[%s][#%s][Chat] !*me : %s" % (time.strftime('%H:%M:%S', time.localtime()), self.config.channel, msg))
+		print("[{}][#{}][Chat] !*me : {}".format(time.strftime('%H:%M:%S', time.localtime()), self.config.channel, msg))
 
 	def sendPONG(self):
 		self.socket.send(("PONG :tmi.twitch.tv\r\n").encode("utf-8"))
@@ -60,9 +60,9 @@ class Bot(threading.Thread):
 				if self.config.debug:
 					print(chat_data)
 				try:
-					print("[%s][%s][Chat] %s : %s" % (time.strftime('%H:%M:%S', time.localtime()), channel, user, msg))
+					print("[{}][{}][Chat] {} : {}".format(time.strftime('%H:%M:%S', time.localtime()), channel, user, msg))
 				except:
-					print("[%s][%s][Error] %s : I can't encode character!!" % (time.strftime('%H:%M:%S', time.localtime()), channel, self.getName()))
+					print("[{}][{}][Error] {} : I can't encode character!!".format(time.strftime('%H:%M:%S', time.localtime()), channel, self.getName()))
 				if Commandlib.is_valid_command(msg) or Commandlib.is_valid_command(msg.split(' ')[0]):
 					if Commandlib.check_returns_function(msg.split(' ')[0]):
 						if Commandlib.check_has_correct_args(msg, msg.split(' ')[0]):
@@ -77,4 +77,4 @@ class Bot(threading.Thread):
 							msg_p = Commandlib.get_return(msg)
 							self.sendMessage(msg_p)
 				time.sleep(1/self.config.rate)
-		print('[%s][System] %s stop at %s !!' % (time.strftime('%H:%M:%S', time.localtime()), self.getName(), time.ctime()))
+		print('[{}][System] {} stop at {} !!'.format(time.strftime('%H:%M:%S', time.localtime()), self.getName(), time.ctime()))
