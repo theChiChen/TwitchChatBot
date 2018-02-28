@@ -3,7 +3,7 @@ import configparser
 import codecs
 
 class Config(object):
-    def __init__(self, config_file='config/Options.conf'):
+    def __init__(self, config_file='Options.conf'):
         config = configparser.ConfigParser()
         config.read_file(codecs.open(config_file, "r", "utf-8"))
 
@@ -11,15 +11,13 @@ class Config(object):
         self.port = config.getint('Server', 'Port', fallback=None)
 
         self.nick = config.get('Credentials', 'Nick', fallback=None)
+        self.client_id = config.get('Credentials', 'Client_ID', fallback=None)
         self.oauth_password = config.get('Credentials', 'Oauth_password', fallback=None)
 
         self.channel = config.get('Chat', 'Channel', fallback=None)
-        self.socket_buffer_size = config.getint('Chat', 'Socket_buffer_size', fallback=1024)
-        self.rate = config.getfloat('Chat', 'Rate', fallback=0.67)
-        self.broadcast_time = config.getint('Chat', 'Broadcast_time', fallback=300)
-        self.welcome_message = config.get('Chat', 'Welcome_message', fallback=None)
+        self.broadcast_time = config.getint('Chat', 'Broadcast_time', fallback=None)
 
-        self.debug = config.getboolean('Debug', 'Debug', fallback=True)
+        self.debug = config.getint('Debug', 'Debug', fallback=True)
 
         # Validation logic for bot settings.
         if not self.nick or not self.oauth_password:

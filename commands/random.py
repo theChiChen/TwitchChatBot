@@ -3,14 +3,12 @@
 import random as randomlib
 
 def random(args):
-	min = int(float(args[1]))
-	max = int(float(args[2]))
 
-	usage = '!random <min> <max>'
+	usage = 'random usage : !random <min> <max> (use full integers)'
 
-	try:
-		return randomlib.randint(min, max)
-	except IndexError:
-		return '!random <min> <max> (use full integers)'
-	except:
+	if len(args) == 3:
+		min = int(float(args[1]))
+		max = int(float(args[2]))
+		return args[0] + " " +str(randomlib.randint(min, max))
+	else:
 		return usage

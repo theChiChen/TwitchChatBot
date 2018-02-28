@@ -26,9 +26,8 @@ class Commandlib(object):
 	def get_return(self, command):
 		return commands[command]['return']
 
-	def check_has_correct_args(self, message, command):
-		message = message.split(' ')
-		if len(message) - 1 == commands[command]['argc']:
+	def check_has_correct_args(self, command, arguments):
+		if len(arguments) - 1 == commands[command]['argc']:
 			return True
 
 	def pass_to_function(self, command, args):

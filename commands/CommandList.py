@@ -4,16 +4,20 @@ commands = {
 	'hi': {
 		'return': 'hi hi !!!'
 	},
-	'!test': {
+	'test': {
 		'argc': 0,
 		'return': 'command'
 	},
-	'!random': {
+	'random': {
 		'argc': 2,
 		'return': 'command'
 	},
-	'!sibala': {
+	'sibala': {
 		'argc': 0,
 		'return': 'command'
-	}
+	},
+	'randomemote': {
+		'argc': 0,
+		'return': 'command'
+	}	
 }
