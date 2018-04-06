@@ -16,6 +16,7 @@ class Config(object):
 
         self.channel = config.get('Chat', 'Channel', fallback=None)
         self.broadcast_time = config.getint('Chat', 'Broadcast_time', fallback=None)
+        self.rate = config.getfloat('Chat', 'Rate', fallback=None)
 
         self.debug = config.getint('Debug', 'Debug', fallback=True)
 

@@ -16,6 +16,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         self.token = config.oauth_password
         self.channel = '#' + config.channel
         self.debug = config.debug
+        self.rate = config.rate
+        self.command_start_time = self.command_end_time = 0
 
         # Get the channel id, we will need this for v5 API calls
         url = 'https://api.twitch.tv/kraken/users?login=' + config.channel
@@ -40,12 +42,14 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
     def on_pubmsg(self, c, e):
         # If a chat message starts with an exclamation point, try to run it as a command
-        if e.arguments[0][:1] == '!':
+        self.command_start_time = time.time()
+        if e.arguments[0][:1] == '!' and (abs(self.command_end_time - self.command_start_time)) > self.rate:
             cmd = e.arguments[0].split(' ')[0][1:]
             arguments = e.arguments[0].split(' ')
             arguments[0] = e.source.nick
             TwitchBotLogger.info("Get [{}] {} : {}".format(self.channel, e.source.nick, cmd))
             self.do_command(e, cmd.lower(), arguments)
+            self.command_end_time = time.time()
         return
 
     def do_command(self, e, cmd, arguments):
